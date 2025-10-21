@@ -9,11 +9,18 @@ require("dotenv").config();
 
 const app = express();
 
+const allowedOrigins = process.env.ALLOWED_ORIGIN?.split(",") || [];
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
-    credentials: true, 
+    origin: (origin, callback) => {
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
   })
 );
 
